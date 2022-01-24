@@ -1,10 +1,14 @@
 import cv2 as cv
-import mediapipe as mp 
-import time
-cap=cv.VideoCapture(0)
-while 1 :
-    success,img=cap.read()
+import mediapipe as m
+from hand_analysing.hand import hand_track
+
+def main():
+  cap=cv.VideoCapture(0)
+  while 1 :
+   success,img=cap.read()
 
 
-    cv.imshow("Image",img)
-    cv.waitKey(1)
+
+
+if __name__ == '__main__':
+  main()
