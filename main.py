@@ -10,8 +10,11 @@ def main():
    success,img=cap.read()
    img= hand_detector.findshands(img)
    img= face_detector.find_face(img)
+   #pour afficher les images    
    cv.imshow("Image",img)
-   cv.waitKey(1)
+   # pour quitter le program
+   if cv.waitKey(20) & 0xFF == ord('q'):
+     break
 
 if __name__ == '__main__':
   main()

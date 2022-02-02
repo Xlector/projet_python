@@ -2,7 +2,7 @@ import cv2 as cv
 import mediapipe as m
 
 class hand_track():
-    def __init__(self,mode=False,maxbra=2,modelComplexity=1,detectioncon=0.5,trackcon=0.5):
+    def __init__(self,mode=False,maxbra=1,modelComplexity=1,detectioncon=0.5,trackcon=0.5):
         self.modelComplexity=modelComplexity
         self.mode=mode
         self.trackcon=trackcon
