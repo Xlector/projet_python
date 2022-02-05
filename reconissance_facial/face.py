@@ -1,9 +1,6 @@
-from contextlib import nullcontext
 import cv2 as cv
 import mediapipe as m
-import os 
-BASE_DIR=os.path.dirname(os.path.abspath(__file__))
-IMG_DIR=os.path.join(BASE_DIR,"/src/tmp/images")
+#facecascade=cv.CascadeClassifier("haarcascade_frontalcatface_extended.xml")
 class face_track():
   def __init__(self, minDetectionCon=0.5) :
     self.minDetectionCon=minDetectionCon

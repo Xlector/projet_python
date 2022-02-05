@@ -1,5 +1,4 @@
 import cv2 as cv
-import mediapipe as m
 from hand_analysing.hand import hand_track
 from reconissance_facial.face import  face_track
 def main():
@@ -9,7 +8,7 @@ def main():
   while  True:
    success,img=cap.read()
    img= hand_detector.findshands(img)
-   img= face_detector.find_face(img)
+   img= face_detector.find_face(img,1)
    #pour afficher les images    
    cv.imshow("Image",img)
    # pour quitter le program
