@@ -47,10 +47,10 @@ def check_haarcascadefile():
 ###################################################################################
 
 def save_pass():
-    assure_path_exists("TrainingImageLabel/")
-    exists1 = os.path.isfile("TrainingImageLabel/psd.txt")
+    assure_path_exists("Etiquette_d'image_de_simulation/")
+    exists1 = os.path.isfile("Etiquette_d'image_de_simulation/psd.txt")
     if exists1:
-        tf = open("TrainingImageLabel/psd.txt", "r")
+        tf = open("Etiquette_d'image_de_simulation/psd.txt", "r")
         key = tf.read()
     else:
         master.destroy()
@@ -58,7 +58,7 @@ def save_pass():
         if new_pas == None:
             mess._show(title='Aucun mot de passe n\'a été saisi', message='Mot de passe non défini ! Veuillez réessayer')
         else:
-            tf = open("TrainingImageLabel/psd.txt", "w")
+            tf = open("Etiquette_d'image_de_simulation/psd.txt", "w")
             tf.write(new_pas)
             mess._show(title='Mot de passe enregistré', message='Le nouveau mot de passe a été enregistré avec succès !')
             return
@@ -67,7 +67,7 @@ def save_pass():
     nnewp = (nnew.get())
     if (op == key):
         if(newp == nnewp):
-            txf = open("TrainingImageLabel/psd.txt", "w")
+            txf = open("Etiquette_d'image_de_simulation/psd.txt", "w")
             txf.write(newp)
         else:
             mess._show(title='Erreur', message='Confirmez à nouveau le nouveau mot de passe !')
@@ -111,17 +111,17 @@ def change_pass():
 #####################################################################################
 
 def psw():
-    assure_path_exists("TrainingImageLabel/")
-    exists1 = os.path.isfile("TrainingImageLabel/psd.txt")
+    assure_path_exists("Etiquette_d'image_de_simulation/")
+    exists1 = os.path.isfile("Etiquette_d'image_de_simulation/psd.txt")
     if exists1:
-        tf = open("TrainingImageLabel/psd.txt", "r")
+        tf = open("Etiquette_d'image_de_simulation/psd.txt", "r")
         key = tf.read()
     else:
         new_pas = tsd.askstring('Ancien mot de passe non trouvé', 'Veuillez entrer un nouveau mot de passe ci-dessous', show='*')
         if new_pas == None:
             mess._show(title='Aucun mot de passe n\'a été saisi', message='Mot de passe non défini ! \n Veuillez réessayer')
         else:
-            tf = open("TrainingImageLabel/psd.txt", "w")
+            tf = open("Etiquette_d'image_de_simulation/psd.txt", "w")
             tf.write(new_pas)
             mess._show(title='Mot de passe enregistré', message='Le nouveau mot de passe a été enregistré avec succès !')
             return
@@ -152,16 +152,16 @@ def clear2():
 def Prenez_des_images():
     check_haarcascadefile()
     columns = ['SERIAL NO.', '', 'ID', '', 'NAME']
-    assure_path_exists("StudentDetails/")
-    assure_path_exists("TrainingImage/")
+    assure_path_exists("Details_l'Etudiant/")
+    assure_path_exists("Image_d'entrainement/")
     serial = 0
-    exists = os.path.isfile("StudentDetails/StudentDetails.csv")
+    exists = os.path.isfile("Details_l'Etudiant/Details_l'Etudiant.csv")
     if exists:
-        with open("StudentDetails/StudentDetails.csv", 'r') as csvFile1:
+        with open("Details_l'Etudiant/Details_l'Etudiant.csv", 'r') as csvFile1:
          serial = len(csvFile1.readlines())
         csvFile1.close()
     else:
-        with open("StudentDetails/StudentDetails.csv", 'a+') as csvFile1:
+        with open("Details_l'Etudiant/Details_l'Etudiant.csv", 'a+') as csvFile1:
             serial = len(csvFile1.readlines())
         csvFile1.close()
     Id = (txt.get())
@@ -174,13 +174,13 @@ def Prenez_des_images():
         while (True):
             ret, img = cam.read()
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = detector.detectMultiScale(gray, 1.3, 5)
+            faces = detector.detectMultiScale(gray, 1.2, 5)
             for (x, y, w, h) in faces:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 # incrementing sample number
                 sampleNum = sampleNum + 1
-                # saving the captured face in the dataset folder TrainingImage
-                cv2.imwrite("TrainingImage/ " + name + "." + str(serial) + "." + Id + '.' + str(sampleNum) + ".jpg",
+                # saving the captured face in the dataset folder Image_d'entrainement
+                cv2.imwrite("Image_d'entrainement/ " + name + "." + str(serial) + "." + Id + '.' + str(sampleNum) + ".jpg",
                             gray[y:y + h, x:x + w])
                 # display the frame
                 cv2.imshow('Prise d\'images', img)
@@ -194,7 +194,7 @@ def Prenez_des_images():
         cv2.destroyAllWindows()
         res = " Images prises CNE :" + Id
         row = [serial, '', Id, '', name]
-        with open('StudentDetails/StudentDetails.csv', 'a+') as csvFile:
+        with open('Details_l\'Etudiant/Details_l\'Etudiant.csv', 'a+') as csvFile:
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
@@ -208,17 +208,17 @@ def Prenez_des_images():
 
 def TrainImages():
     check_haarcascadefile()
-    assure_path_exists("TrainingImageLabel/")
+    assure_path_exists("Etiquette_d'image_de_simulation/")
     recognizer = cv2.face_LBPHFaceRecognizer.create()
     harcascadePath = "haarcascade_frontalface_default.xml"
     detector = cv2.CascadeClassifier(harcascadePath)
-    faces, ID = getImagesAndLabels("TrainingImage")
+    faces, ID = getImagesAndLabels("Image_d'entrainement")
     try:
         recognizer.train(faces, np.array(ID))
     except:
         mess._show(title='Aucun Enregistrement', message='S\'il vous plaît, enregistrez quelqu\'un d\'abord ')
         return
-    recognizer.save("TrainingImageLabel/Trainner.yml")
+    recognizer.save("Etiquette_d'image_de_simulation/Trainner.yml")
     res = "Profil sauvegardé avec succès"
     message1.configure(text=res)
     message.configure(text='Nombre total d\'inscriptions : ' + str(ID[0]))
@@ -250,26 +250,25 @@ def getImagesAndLabels(path):
 def Tracking_des_images():
 
     check_haarcascadefile()
-    assure_path_exists("Attendance/")
-    assure_path_exists("StudentDetails/")
+    assure_path_exists("Details_l'Etudiant/")
     for k in tv.get_children():
         tv.delete(k)
     i = 0
     recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
-    exists3 = os.path.isfile("TrainingImageLabel/Trainner.yml")
+    exists3 = os.path.isfile("Etiquette_d'image_de_simulation/Trainner.yml")
     if exists3:
-        recognizer.read("TrainingImageLabel/Trainner.yml")
+        recognizer.read("Etiquette_d'image_de_simulation/Trainner.yml")
     else:
         mess._show(title='Details manquants', message='Veuillez cliquer sur Enregistrer le profil pour réinitialiser les données !')
         return
     harcascadePath = "haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(harcascadePath);
-    attendance= []
+    presences= []
     cam = cv2.VideoCapture(0)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    exists1 = os.path.isfile("StudentDetails/StudentDetails.csv")
+    exists1 = os.path.isfile("Details_l'Etudiant/Details_l'Etudiant.csv")
     if exists1:
-        df = pd.read_csv("StudentDetails/StudentDetails.csv")
+        df = pd.read_csv("Details_l'Etudiant/Details_l'Etudiant.csv")
     else:
         mess._show(title='Details manquants', message='Des détails sur les étudiants manquent, veuillez vérifier !')
         cam.release()
@@ -284,7 +283,7 @@ def Tracking_des_images():
             serial, conf = recognizer.predict(gray[y:y + h, x:x + w])
             if (conf < 50):
                 ts = time.time()
-                date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')
+                date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%d-%m')
                 timeStamp = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
                 nom = df.loc[df['SERIAL NO.'] == serial]['NAME'].values
                 ID = df.loc[df['SERIAL NO.'] == serial]['ID'].values
@@ -293,22 +292,22 @@ def Tracking_des_images():
                 bb = str(nom)
                 bb = bb[2:-2]
                 etudaint_a = [str(ID),bb, str(date),str(timeStamp)]
-                if (len(attendance)==0) :
-                    attendance.append(etudaint_a)
+                if (len(presences)==0) :
+                    presences.append(etudaint_a)
                 else :
                   i=0
-                  for etudiant in attendance :
+                  for etudiant in presences :
                         if(etudiant[1] != bb) :
                          i+=1
-                if(len(attendance)==i) :
-                    attendance.append(etudaint_a)
+                if(len(presences)==i) :
+                    presences.append(etudaint_a)
             else:
                 Id = 'Inconnu'
                 bb = str(Id)
             cv2.putText(im, str(bb), (x, y + h), font, 1, (255, 255, 255), 2)
         cv2.imshow("Notant la presence",im)
         if (cv2.waitKey(1) == ord('q')):
-            ajouter_presences(attendance)
+            ajouter_presences(presences)
             bring_data()
             break
     cam.release()
@@ -320,8 +319,8 @@ global key
 key = ''
 
 ts = time.time()
-date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')
-day,month,year=date.split("-")
+date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%d-%m')
+year,day,month=date.split("-")
 
 mont={'01':'janvier',
       '02':'février',
@@ -382,13 +381,13 @@ head1.place(x=0,y=0)
 lbl = tk.Label(frame2, text="Entrer CNE",width=20  ,height=1  ,fg="#fff"  ,bg="#999999" ,font=('times', 17, ' bold ') )
 lbl.place(x=80, y=55)
 
-txt = tk.Entry(frame2,width=32 ,fg="#fff",font=('times', 15, ' bold '))
+txt = tk.Entry(frame2,width=32 ,fg="black",font=('times', 15, ' bold '))
 txt.place(x=30, y=88)
 
 lbl2 = tk.Label(frame2, text="Entrez le nom complet",width=20  ,fg="#fff"  ,bg="#999999" ,font=('times', 17, ' bold '))
 lbl2.place(x=80, y=140)
 
-txt2 = tk.Entry(frame2,width=32 ,fg="#fff",font=('times', 15, ' bold ')  )
+txt2 = tk.Entry(frame2,width=32 ,fg="black",font=('times', 15, ' bold ')  )
 txt2.place(x=30, y=173)
 
 message1 = tk.Label(frame2, text="1)Prenez des photos >>>  2)Enregistrer le profil" ,bg="#999999" ,fg="#fff"  ,width=43 ,height=1, activebackground = "yellow" ,font=('times', 15, ' bold '))
@@ -401,16 +400,16 @@ lbl3 = tk.Label(frame1, text="Présence",width=20  ,fg="#fff"  ,bg="#999999"  ,h
 lbl3.place(x=100, y=115)
 
 res=0
-exists = os.path.isfile("StudentDetails/StudentDetails.csv")
+exists = os.path.isfile("Details_l'Etudiant/Details_l'Etudiant.csv")
 if exists:
-    with open("StudentDetails/StudentDetails.csv", 'r') as csvFile1:
+    with open("Details_l'Etudiant/Details_l'Etudiant.csv", 'r') as csvFile1:
      res = len(csvFile1.readlines()) - 1
     csvFile1.close()
 else:
     res = 0
 message.configure(text='Nombre total d\'inscriptions  : '+str(res))
 
-#####################  MENUBAR  #################################
+#####################  barre de menu  #################################
 
 menubar = tk.Menu(window,relief='ridge')
 filemenu = tk.Menu(menubar,tearoff=0)
@@ -450,7 +449,7 @@ def bring_data():
         ts = time.time()
         date= datetime.datetime.fromtimestamp(ts).strftime('%Y-%d-%m')
         temps = datetime.datetime.fromtimestamp(ts).strftime('%H')
-        sql_select_query: str = "select * from presences where presences.Date = '"+date+"' and SUBSTR(presences.temps, 1, 2) = '"+temps+"';"
+        sql_select_query: str = "select * from presences where DATE_FORMAT(presences.Date, '%Y-%d-%m')  = '"+date+"' and SUBSTR(presences.temps, 1, 2) = '"+temps+"';"
         cursor = connection.cursor()
         cursor.execute(sql_select_query)
         # get all records
@@ -466,10 +465,11 @@ def bring_data():
             cursor.close()
 
 ######################################ajouter_presences#################################################
-def ajouter_presences(attendance):
+def ajouter_presences(presences):
 
 
     try:
+
         connection = mysql.connector.connect(host='localhost',
                                              database='presence',
                                              user='admin',
@@ -478,8 +478,9 @@ def ajouter_presences(attendance):
 
 
         cursor = connection.cursor()
-        for row in attendance:
-            sql_select_Query = "INSERT INTO `presences` (`CNE`, `Nom_complet`, `Date`, `temps`) VALUES ('"+row[0]+"','"+row[1]+"', STR_TO_DATE('"+row[2]+"', '%m-%d-%Y'),  STR_TO_DATE('"+row[3]+"','%H:%i:%s'))"
+        for row in presences:
+            print(row[2])
+            sql_select_Query = "INSERT INTO `presences` (`CNE`, `Nom_complet`, `Date`, `temps`) VALUES ('"+row[0]+"','"+row[1]+"',  STR_TO_DATE( '"+row[2]+"' , '%Y-%d-%m' ) ,  STR_TO_DATE('"+row[3]+"','%H:%i:%s'))"
             cursor.execute(sql_select_Query)
             connection.commit()
 
